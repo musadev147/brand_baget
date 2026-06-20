@@ -26,36 +26,53 @@ class CreatorHomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Row(
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: NetworkImage(marketplace.creatorAvatar),
-            ),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        title: GestureDetector(
+          onTap: () {
+            final myCreator = marketplace.creators.firstWhere((c) => c.id == "1");
+            Get.toNamed(Routes.CREATOR_PROFILE, arguments: myCreator);
+          },
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Row(
               children: [
-                Text(
-                  marketplace.userName,
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.allPrimaryColor,
-                  ),
+                CircleAvatar(
+                  radius: 18,
+                  backgroundImage: NetworkImage(marketplace.creatorAvatar),
                 ),
-                Text(
-                  "CreatorSpace Dashboard",
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 11,
-                    color: AppColors.c6C6C6C,
-                  ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          marketplace.userName,
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.allPrimaryColor,
+                          ),
+                        ),
+                        if (marketplace.isKycVerified) ...[
+                          const SizedBox(width: 4),
+                          const Icon(Icons.verified, color: Colors.blue, size: 16),
+                        ],
+                      ],
+                    ),
+                    Text(
+                      "CreatorSpace Dashboard",
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 11,
+                        color: AppColors.c6C6C6C,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
         actions: [
           IconButton(
@@ -114,13 +131,15 @@ class CreatorHomeScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "My Sponsorship Posts",
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.allPrimaryColor,
+                  const Expanded(
+                    child: Text(
+                      "My Sponsorship Posts",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.allPrimaryColor,
+                      ),
                     ),
                   ),
                   TextButton.icon(

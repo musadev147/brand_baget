@@ -4,6 +4,7 @@ import 'package:brand_bridge/constants/app_colors.dart';
 import 'package:brand_bridge/constants/text_font_style.dart';
 import 'package:brand_bridge/common_wigdets/common_button.dart';
 import 'package:brand_bridge/route/app_pages.dart';
+import 'package:brand_bridge/common_wigdets/block_pop_up.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -49,14 +50,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () => BlockPopUp.showExitDialog(context),
+      child: Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           TextButton(
-            onPressed: () => Get.offNamed(Routes.LOGIN),
+            onPressed: () => Get.offNamed(Routes.ROLE_SELECTION),
             child: Text(
               "Skip",
               style: TextStyle(
@@ -156,7 +159,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       curve: Curves.easeIn,
                     );
                   } else {
-                    Get.offNamed(Routes.LOGIN);
+                    Get.offNamed(Routes.ROLE_SELECTION);
                   }
                 },
                 backgroundColor: AppColors.appThemeColor,
@@ -166,6 +169,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
       ),
-    );
+    ),);
   }
 }

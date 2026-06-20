@@ -22,6 +22,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.allPrimaryColor),
+          onPressed: () => Get.back(),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 36.0),
@@ -101,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   text: "Sign Up",
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Get.offNamed(Routes.ROLE_SELECTION);
+                      Get.offNamed(Routes.KYC);
                     }
                   },
                   backgroundColor: AppColors.appThemeColor,

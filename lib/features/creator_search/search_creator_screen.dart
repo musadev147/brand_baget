@@ -164,16 +164,26 @@ class _SearchCreatorScreenState extends State<SearchCreatorScreen> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Expanded(
-                                              child: Text(
-                                                creator.name,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontFamily: 'Poppins',
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.allPrimaryColor,
-                                                ),
+                                              child: Row(
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                      creator.name,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: AppColors.allPrimaryColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  if (creator.id == "1" ? marketplace.isKycVerified : true) ...[
+                                                    const SizedBox(width: 4),
+                                                    const Icon(Icons.verified, color: Colors.blue, size: 16),
+                                                  ],
+                                                ],
                                               ),
                                             ),
                                             Row(

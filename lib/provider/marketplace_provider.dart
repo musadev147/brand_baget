@@ -322,6 +322,7 @@ class MarketplaceProvider extends ChangeNotifier {
   UserRole _currentRole = UserRole.client;
   String _userName = "John Doe";
   String _userEmail = "john@example.com";
+  bool _isKycVerified = false;
   
   // Client specific fields
   String _companyName = "TechVibe Global";
@@ -331,13 +332,21 @@ class MarketplaceProvider extends ChangeNotifier {
 
   // Creator specific fields
   List<String> _creatorCategories = ["Tech", "Gaming"];
-  String _creatorBio = "Veteran tech reviewer and gamer based in Dhaka.";
+  String _creatorBio = "Reviewing the latest mobile gadgets and PC builds. Helping brands connect with youth in Bangladesh.";
   Map<String, String> _creatorPlatformLinks = {
     "YouTube": "youtube.com/c/sabbirtech",
     "Instagram": "instagram.com/sabbir_tech"
   };
   int _creatorFollowers = 75000;
-  String _creatorAvatar = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150";
+  String _creatorAvatar = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150";
+  String _creatorLocation = "Dhaka";
+  int _creatorAvgViews = 45000;
+  double _creatorEngagementRate = 8.4;
+  List<String> _creatorPortfolio = [
+    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    "https://www.youtube.com/watch?v=ENCNYIIp14I"
+  ];
 
   // Data Stores
   List<CreatorModel> _creators = [];
@@ -359,6 +368,7 @@ class MarketplaceProvider extends ChangeNotifier {
   // Getters
   UserRole get currentRole => _currentRole;
   String get userName => _userName;
+  bool get isKycVerified => _isKycVerified;
   String get userEmail => _userEmail;
   String get companyName => _companyName;
   String get businessType => _businessType;
@@ -369,6 +379,10 @@ class MarketplaceProvider extends ChangeNotifier {
   Map<String, String> get creatorPlatformLinks => _creatorPlatformLinks;
   int get creatorFollowers => _creatorFollowers;
   String get creatorAvatar => _creatorAvatar;
+  String get creatorLocation => _creatorLocation;
+  int get creatorAvgViews => _creatorAvgViews;
+  double get creatorEngagementRate => _creatorEngagementRate;
+  List<String> get creatorPortfolio => _creatorPortfolio;
   List<CreatorModel> get creators => _creators;
   List<CampaignModel> get campaigns => _campaigns;
   List<GigModel> get gigs => _gigs;
@@ -392,6 +406,11 @@ class MarketplaceProvider extends ChangeNotifier {
 
   void setRole(UserRole role) {
     _currentRole = role;
+    notifyListeners();
+  }
+
+  void setKycVerified(bool verified) {
+    _isKycVerified = verified;
     notifyListeners();
   }
 
@@ -420,6 +439,10 @@ class MarketplaceProvider extends ChangeNotifier {
     required Map<String, String> platformLinks,
     required int followers,
     required String avatar,
+    required String location,
+    required int avgViews,
+    required double engagementRate,
+    required List<String> portfolio,
   }) {
     _userName = name;
     _userEmail = email;
@@ -428,6 +451,35 @@ class MarketplaceProvider extends ChangeNotifier {
     _creatorPlatformLinks = platformLinks;
     _creatorFollowers = followers;
     _creatorAvatar = avatar;
+    _creatorLocation = location;
+    _creatorAvgViews = avgViews;
+    _creatorEngagementRate = engagementRate;
+    _creatorPortfolio = portfolio;
+
+    // Sync with the CreatorModel in _creators list (id == "1")
+    final idx = _creators.indexWhere((c) => c.id == "1");
+    if (idx != -1) {
+      final old = _creators[idx];
+      _creators[idx] = CreatorModel(
+        id: old.id,
+        name: name,
+        avatar: avatar,
+        categories: categories,
+        followersCount: followers,
+        engagementRate: engagementRate,
+        avgViews: avgViews,
+        reviewsCount: old.reviewsCount,
+        rating: old.rating,
+        location: location,
+        bio: bio,
+        platformLinks: platformLinks,
+        fakeFollowersPct: old.fakeFollowersPct,
+        audienceQualityScore: old.audienceQualityScore,
+        audienceAgeGenders: old.audienceAgeGenders,
+        portfolio: portfolio,
+        reviews: old.reviews,
+      );
+    }
     notifyListeners();
   }
 
@@ -829,7 +881,11 @@ class MarketplaceProvider extends ChangeNotifier {
         fakeFollowersPct: 4,
         audienceQualityScore: 92.5,
         audienceAgeGenders: "18-24 (62%), 25-34 (28%)",
-        portfolio: ["Realme 11 Pro review", "My gaming desk tour 2026", "Top 5 software for students"],
+        portfolio: [
+          "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+          "https://www.youtube.com/watch?v=ENCNYIIp14I"
+        ],
         reviews: ["Sabbir was extremely professional and delivered the script ahead of schedule.", "Excellent engagement! We got over 1,500 app installs from his video."],
       ),
       CreatorModel(

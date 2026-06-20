@@ -6,6 +6,7 @@ abstract class Routes {
   static const LOGIN = '/login';
   static const REGISTER = '/register';
   static const ROLE_SELECTION = '/role_selection';
+  static const KYC = '/kyc';
   static const CLIENT_HOME = '/client_home';
   static const CREATOR_HOME = '/creator_home';
   static const SEARCH_CREATOR = '/search_creator';
