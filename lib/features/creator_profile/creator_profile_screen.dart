@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:brand_bridge/constants/app_colors.dart';
+import 'package:brand_bridge/common_wigdets/user_role.dart';
+import 'package:brand_bridge/common_wigdets/common_button.dart';
 import 'package:brand_bridge/provider/marketplace_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:get/get.dart';
+import 'package:brand_bridge/route/app_pages.dart';
 
 class CreatorProfileScreen extends StatefulWidget {
   const CreatorProfileScreen({super.key});
@@ -13,6 +18,34 @@ class CreatorProfileScreen extends StatefulWidget {
 class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
   bool _isAnalyzing = false;
   Map<String, dynamic>? _analysisResult;
+
+  Future<void> _launchURL(String urlString) async {
+    String formattedUrl = urlString.trim();
+    if (formattedUrl.isEmpty) return;
+    if (!formattedUrl.startsWith("http://") && !formattedUrl.startsWith("https://")) {
+      formattedUrl = "https://$formattedUrl";
+    }
+    final Uri uri = Uri.parse(formattedUrl);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        Get.snackbar(
+          "Error",
+          "Could not launch link: $urlString",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Invalid url format or link could not be opened: $urlString",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
 
   void _runAudienceAnalysis(MarketplaceProvider provider, String creatorId) async {
     setState(() {
@@ -36,6 +69,7 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
     // Get creator model from arguments passed via Get
     final CreatorModel creator = ModalRoute.of(context)!.settings.arguments as CreatorModel;
     final provider = Provider.of<MarketplaceProvider>(context, listen: false);
+    final bool isVerified = creator.id == "1" ? provider.isKycVerified : true;
 
     return Scaffold(
       backgroundColor: AppColors.cF5F6FA,
@@ -43,14 +77,22 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppColors.allPrimaryColor),
-        title: Text(
-          creator.name,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: AppColors.allPrimaryColor,
-          ),
+        title: Row(
+          children: [
+            Text(
+              creator.name,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: AppColors.allPrimaryColor,
+              ),
+            ),
+            if (isVerified) ...[
+              const SizedBox(width: 4),
+              const Icon(Icons.verified, color: Colors.blue, size: 16),
+            ],
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -75,14 +117,22 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            creator.name,
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.allPrimaryColor,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                creator.name,
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.allPrimaryColor,
+                                ),
+                              ),
+                              if (isVerified) ...[
+                                const SizedBox(width: 4),
+                                const Icon(Icons.verified, color: Colors.blue, size: 18),
+                              ],
+                            ],
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -297,9 +347,15 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                 color: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 child: ListTile(
+                  onTap: () => _launchURL(title),
                   leading: const Icon(Icons.video_collection_rounded, color: AppColors.appThemeColor),
-                  title: Text(title, style: const TextStyle(fontFamily: 'Poppins', fontSize: 13, fontWeight: FontWeight.bold)),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+                  title: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 13, fontWeight: FontWeight.bold),
+                  ),
+                  trailing: const Icon(Icons.open_in_new, size: 14, color: Colors.grey),
                 ),
               );
             }).toList(),
@@ -338,9 +394,30 @@ class _CreatorProfileScreenState extends State<CreatorProfileScreen> {
                 ),
               );
             }).toList(),
-          ],
+            ],
+          ),
         ),
-      ),
+      bottomNavigationBar: provider.currentRole == UserRole.client
+          ? SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: CommonButton(
+                  text: "Message ${creator.name}",
+                  assetIconPath: null,
+                  icon: const Icon(Icons.chat_bubble_rounded, color: Colors.white, size: 20),
+                  onPressed: () {
+                    Get.toNamed(Routes.CHAT, arguments: {
+                      "chatId": "direct_${creator.id}",
+                      "campaignTitle": "Direct Inquiry with ${creator.name}",
+                      "partnerName": creator.name,
+                      "partnerRole": UserRole.creator,
+                    });
+                  },
+                  backgroundColor: AppColors.appThemeColor,
+                ),
+              ),
+            )
+          : null,
     );
   }
 

@@ -21,6 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.allPrimaryColor),
+          onPressed: () => Get.back(),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 36.0),
@@ -110,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: "Login",
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Get.offNamed(Routes.ROLE_SELECTION);
+                      Get.offNamed(Routes.KYC);
                     }
                   },
                   backgroundColor: AppColors.appThemeColor,
@@ -131,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 24),
                 OutlinedButton(
-                  onPressed: () => Get.offNamed(Routes.ROLE_SELECTION),
+                  onPressed: () => Get.offNamed(Routes.KYC),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14.0),
                     minimumSize: const Size(double.infinity, 48),

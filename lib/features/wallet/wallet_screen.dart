@@ -165,17 +165,27 @@ class _WalletScreenState extends State<WalletScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildCardStat("Active Escrow", "\$${marketplace.clientActiveEscrow.toStringAsFixed(0)} (৳${(marketplace.clientActiveEscrow * 118).toStringAsFixed(0)})"),
-                _buildCardStat("Lifetime Spent", "\$${marketplace.clientLifetimeSpent.toStringAsFixed(0)} (৳${(marketplace.clientLifetimeSpent * 118).toStringAsFixed(0)})"),
+                Expanded(
+                  child: _buildCardStat("Active Escrow", "\$${marketplace.clientActiveEscrow.toStringAsFixed(0)} (৳${(marketplace.clientActiveEscrow * 118).toStringAsFixed(0)})"),
+                ),
+                Expanded(
+                  child: _buildCardStat("Lifetime Spent", "\$${marketplace.clientLifetimeSpent.toStringAsFixed(0)} (৳${(marketplace.clientLifetimeSpent * 118).toStringAsFixed(0)})"),
+                ),
               ],
             )
           else
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildCardStat("Pending Clear", "\$${marketplace.creatorPendingClearance.toStringAsFixed(0)} (৳${(marketplace.creatorPendingClearance * 118).toStringAsFixed(0)})"),
-                _buildCardStat("Net Income", "\$${marketplace.creatorNetEarnings.toStringAsFixed(0)} (৳${(marketplace.creatorNetEarnings * 118).toStringAsFixed(0)})"),
-                _buildCardStat("Withdrawn", "\$${marketplace.creatorWithdrawnBalance.toStringAsFixed(0)} (৳${(marketplace.creatorWithdrawnBalance * 118).toStringAsFixed(0)})"),
+                Expanded(
+                  child: _buildCardStat("Pending Clear", "\$${marketplace.creatorPendingClearance.toStringAsFixed(0)} (৳${(marketplace.creatorPendingClearance * 118).toStringAsFixed(0)})"),
+                ),
+                Expanded(
+                  child: _buildCardStat("Net Income", "\$${marketplace.creatorNetEarnings.toStringAsFixed(0)} (৳${(marketplace.creatorNetEarnings * 118).toStringAsFixed(0)})"),
+                ),
+                Expanded(
+                  child: _buildCardStat("Withdrawn", "\$${marketplace.creatorWithdrawnBalance.toStringAsFixed(0)} (৳${(marketplace.creatorWithdrawnBalance * 118).toStringAsFixed(0)})"),
+                ),
               ],
             ),
         ],
@@ -435,20 +445,24 @@ class _WalletScreenState extends State<WalletScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  children: [
-                    Icon(Icons.credit_card_rounded, color: AppColors.appThemeColor),
-                    SizedBox(width: 8),
-                    Text(
-                      "Saved Payment Methods",
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.allPrimaryColor,
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.credit_card_rounded, color: AppColors.appThemeColor),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          "Saved Payment Methods",
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.allPrimaryColor,
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 TextButton(
                   onPressed: () => _showAddPaymentMethodDialog(context),

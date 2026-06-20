@@ -53,6 +53,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               color: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: ListTile(
+                onTap: marketplace.currentRole == UserRole.creator
+                    ? () {
+                        final myCreator = marketplace.creators.firstWhere((c) => c.id == "1");
+                        Get.toNamed(Routes.CREATOR_PROFILE, arguments: myCreator);
+                      }
+                    : null,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 leading: CircleAvatar(
                   radius: 24,
@@ -62,9 +68,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         : marketplace.creatorAvatar,
                   ),
                 ),
-                title: Text(
-                  marketplace.userName,
-                  style: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold, fontSize: 15),
+                title: Row(
+                  children: [
+                    Text(
+                      marketplace.userName,
+                      style: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    if (marketplace.isKycVerified) ...[
+                      const SizedBox(width: 4),
+                      const Icon(Icons.verified, color: Colors.blue, size: 16),
+                    ],
+                  ],
                 ),
                 subtitle: Text(
                   marketplace.userEmail,
@@ -105,6 +119,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: "Currently: ${marketplace.currentRole == UserRole.client ? 'Client/Brand' : 'Influencer'}",
               onTap: () {
                 Get.offAllNamed(Routes.ROLE_SELECTION);
+              },
+            ),
+
+            _buildSettingsItem(
+              icon: Icons.verified_user_rounded,
+              title: "Identity Verification (KYC)",
+              subtitle: "Manage and verify your identity documents",
+              onTap: () {
+                Get.toNamed(Routes.KYC);
               },
             ),
 

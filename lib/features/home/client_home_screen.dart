@@ -22,14 +22,22 @@ class ClientHomeScreen extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              marketplace.companyName,
-              style: const TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.allPrimaryColor,
-              ),
+            Row(
+              children: [
+                Text(
+                  marketplace.companyName,
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.allPrimaryColor,
+                  ),
+                ),
+                if (marketplace.isKycVerified) ...[
+                  const SizedBox(width: 4),
+                  const Icon(Icons.verified, color: Colors.blue, size: 18),
+                ],
+              ],
             ),
             Text(
               "Client Dashboard",

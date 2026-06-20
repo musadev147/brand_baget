@@ -244,13 +244,14 @@ class _CampaignListScreenState extends State<CampaignListScreen> {
 
   Widget _buildInfoLabel(IconData icon, String label) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Icon(icon, size: 14, color: Colors.black54),
         const SizedBox(width: 4),
-        Text(
-          label,
-          style: const TextStyle(fontFamily: 'Poppins', fontSize: 11, color: Colors.black54),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(fontFamily: 'Poppins', fontSize: 11, color: Colors.black54),
+          ),
         ),
       ],
     );

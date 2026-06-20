@@ -504,25 +504,31 @@ class _MockVideoPlayerWidgetState extends State<MockVideoPlayerWidget> {
                   left: 12,
                   right: 12,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.6),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.verified, color: Colors.green, size: 12),
-                            const SizedBox(width: 4),
-                            Text(
-                              widget.videoUrl.split('/').last.split('?').first,
-                              style: const TextStyle(fontFamily: 'Poppins', color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.verified, color: Colors.green, size: 12),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  widget.videoUrl.split('/').last.split('?').first,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontFamily: 'Poppins', color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      const Spacer(),
                       IconButton(
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),

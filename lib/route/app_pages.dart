@@ -6,6 +6,7 @@ import 'package:brand_bridge/features/onboarding/onboarding_screen.dart';
 import 'package:brand_bridge/features/auth/login_screen.dart';
 import 'package:brand_bridge/features/auth/register_screen.dart';
 import 'package:brand_bridge/features/auth/role_selection_screen.dart';
+import 'package:brand_bridge/features/kyc/kyc_screen.dart';
 import 'package:brand_bridge/features/creator_search/search_creator_screen.dart';
 import 'package:brand_bridge/features/creator_profile/creator_profile_screen.dart';
 import 'package:brand_bridge/features/ai_recommendation/ai_recommendation_screen.dart';
@@ -47,6 +48,10 @@ class AppPages {
     GetPage(
       name: Routes.ROLE_SELECTION,
       page: () => const RoleSelectionScreen(),
+    ),
+    GetPage(
+      name: Routes.KYC,
+      page: () => const KycScreen(),
     ),
     GetPage(
       name: Routes.CLIENT_HOME,

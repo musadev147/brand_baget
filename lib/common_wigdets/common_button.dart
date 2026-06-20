@@ -41,6 +41,7 @@ class CommonButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final textWidget = Text(
       text,
+      textAlign: TextAlign.center,
       style: TextFontStyle.textStyle16Poppins500.copyWith(
         fontSize: 16.sp,
         fontWeight: FontWeight.w500,
@@ -49,36 +50,38 @@ class CommonButton extends StatelessWidget {
     );
 
     final buttonContent = Row(
-  mainAxisSize: MainAxisSize.min,
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    /// LEFT ICON (asset)
-    if (assetIconPath != null) ...[
-      Image.asset(
-        assetIconPath!,
-        height: 20.w,
-        width: 20.w,
-        color: textColor ?? AppColors.cFFFFFF,
-      ),
-      UIHelper.horizontalSpace(10.w),
-    ],
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        /// LEFT ICON (asset)
+        if (assetIconPath != null) ...[
+          Image.asset(
+            assetIconPath!,
+            height: 20.w,
+            width: 20.w,
+            color: textColor ?? AppColors.cFFFFFF,
+          ),
+          UIHelper.horizontalSpace(10.w),
+        ],
 
-    /// Custom icon (optional)
-    if (icon != null) ...[
-      icon!,
-      UIHelper.horizontalSpace(8.w),
-    ],
+        /// Custom icon (optional)
+        if (icon != null) ...[
+          icon!,
+          UIHelper.horizontalSpace(8.w),
+        ],
 
-    /// TEXT
-    textWidget,
+        /// TEXT
+        Flexible(
+          child: textWidget,
+        ),
 
-    /// Suffix icon (right side if needed)
-    if (suffixIcon != null) ...[
-      UIHelper.horizontalSpace(8.w),
-      suffixIcon!,
-    ],
-  ],
-);
+        /// Suffix icon (right side if needed)
+        if (suffixIcon != null) ...[
+          UIHelper.horizontalSpace(8.w),
+          suffixIcon!,
+        ],
+      ],
+    );
 
 
     return SizedBox(
