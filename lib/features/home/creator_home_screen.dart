@@ -5,6 +5,7 @@ import 'package:brand_bridge/constants/app_colors.dart';
 import 'package:brand_bridge/common_wigdets/user_role.dart';
 import 'package:brand_bridge/provider/marketplace_provider.dart';
 import 'package:brand_bridge/route/app_pages.dart';
+import 'package:brand_bridge/common_wigdets/home_promo_slider.dart';
 
 class CreatorHomeScreen extends StatelessWidget {
   const CreatorHomeScreen({super.key});
@@ -122,6 +123,37 @@ class CreatorHomeScreen extends StatelessWidget {
                     value: "\$1,250",
                     icon: Icons.account_balance_wallet_rounded,
                     color: Colors.green,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Promo Slider (Dynamic carousel for Creator updates/actions)
+              HomePromoSlider(
+                items: [
+                  PromoItem(
+                    title: "Get Verified & Build Trust",
+                    description: "Submit your KYC details to display a verification badge and attract 3x more brand campaigns.",
+                    icon: Icons.verified_user_rounded,
+                    gradientColors: [const Color(0xFF1E3A8A), const Color(0xFF3B82F6)],
+                    buttonText: "Verify Identity",
+                    onTap: () => Get.toNamed(Routes.KYC),
+                  ),
+                  PromoItem(
+                    title: "Create Sponsorship Gigs",
+                    description: "Offer packages specifying your platforms, follower reach, price, and custom deliverables.",
+                    icon: Icons.storefront_rounded,
+                    gradientColors: [const Color(0xFF6D28D9), const Color(0xFFEC4899)],
+                    buttonText: "Create Gig Post",
+                    onTap: () => Get.toNamed(Routes.GIG_CREATE),
+                  ),
+                  PromoItem(
+                    title: "Track Earnings & Payouts",
+                    description: "Check your active escrow contracts, pending clearances, and withdraw funds securely.",
+                    icon: Icons.account_balance_wallet_rounded,
+                    gradientColors: [const Color(0xFF0F766E), const Color(0xFF0D9488)],
+                    buttonText: "Go to Wallet",
+                    onTap: () => Get.toNamed(Routes.WALLET),
                   ),
                 ],
               ),

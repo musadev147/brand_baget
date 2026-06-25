@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:brand_bridge/constants/app_colors.dart';
 import 'package:brand_bridge/provider/marketplace_provider.dart';
 import 'package:brand_bridge/route/app_pages.dart';
+import 'package:brand_bridge/common_wigdets/home_promo_slider.dart';
 
 class ClientHomeScreen extends StatelessWidget {
   const ClientHomeScreen({super.key});
@@ -153,56 +154,34 @@ class ClientHomeScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24),
-              // AI Quick Prompt Container
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: const LinearGradient(
-                    colors: [AppColors.allPrimaryColor, AppColors.appThemeColor],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              // Promo Slider (Replaces static AI prompt container)
+              HomePromoSlider(
+                items: [
+                  PromoItem(
+                    title: "Find Creators with AI",
+                    description: "Describe your product launch, and our AI recommends the perfect influencer matches.",
+                    icon: Icons.auto_awesome,
+                    gradientColors: [AppColors.allPrimaryColor, AppColors.appThemeColor],
+                    buttonText: "Launch AI Discovery",
+                    onTap: () => Get.toNamed(Routes.AI_RECOMMENDATION),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Find Creators with AI",
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      "Describe your product launch, and our AI recommends the perfect influencer matches.",
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 13,
-                        color: Colors.white.withOpacity(0.85),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Get.toNamed(Routes.AI_RECOMMENDATION);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.allPrimaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      icon: const Icon(Icons.auto_awesome),
-                      label: const Text("Launch AI Discovery"),
-                    ),
-                  ],
-                ),
+                  PromoItem(
+                    title: "Secure Escrow Payments",
+                    description: "Funds are locked in escrow when the campaign starts and released only when you approve delivery.",
+                    icon: Icons.shield_rounded,
+                    gradientColors: [const Color(0xFF0F766E), const Color(0xFF10B981)],
+                    buttonText: "Manage Wallet",
+                    onTap: () => Get.toNamed(Routes.WALLET),
+                  ),
+                  PromoItem(
+                    title: "Post a New Campaign",
+                    description: "Describe your campaign requirements and start receiving applications from top creators.",
+                    icon: Icons.campaign_rounded,
+                    gradientColors: [const Color(0xFF4F46E5), const Color(0xFF8B5CF6)],
+                    buttonText: "Create Campaign",
+                    onTap: () => Get.toNamed(Routes.CAMPAIGN_CREATE),
+                  ),
+                ],
               ),
               const SizedBox(height: 28),
 
