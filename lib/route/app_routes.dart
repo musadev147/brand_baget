@@ -24,4 +24,6 @@ abstract class Routes {
   static const GIG_CREATE = '/gig_create';
   static const GIG_DETAILS = '/gig_details';
   static const WALLET = '/wallet';
+  static const TWO_STEP_VERIFICATION = '/two_step_verification';
+  static const ORDER_TRACKING = '/order_tracking';
 }

@@ -229,6 +229,7 @@ class GigModel {
   final int facebookFollowers;
   final int instagramFollowers;
   final String videoUrl;
+  final int viewsCount;
 
   int get totalReach => youtubeFollowers + tiktokFollowers + facebookFollowers + instagramFollowers;
 
@@ -258,6 +259,7 @@ class GigModel {
     this.facebookFollowers = 0,
     this.instagramFollowers = 0,
     this.videoUrl = "",
+    this.viewsCount = 0,
   });
 }
 
@@ -270,9 +272,11 @@ class OrderModel {
   final String clientName;
   final String creatorName;
   final String creatorAvatar;
-  final String status; // 'pending', 'in_progress', 'delivered', 'completed'
+  final String status; // 'pending', 'in_progress', 'delivered', 'completed', 'revision_requested'
   final DateTime createdAt;
   final String? deliveryNotes;
+  final String? revisionNotes;
+  final int revisionsLeft;
 
   OrderModel({
     required this.orderId,
@@ -286,6 +290,8 @@ class OrderModel {
     required this.status,
     required this.createdAt,
     this.deliveryNotes,
+    this.revisionNotes,
+    this.revisionsLeft = 2,
   });
 
   OrderModel copyWith({
@@ -300,6 +306,8 @@ class OrderModel {
     String? status,
     DateTime? createdAt,
     String? deliveryNotes,
+    String? revisionNotes,
+    int? revisionsLeft,
   }) {
     return OrderModel(
       orderId: orderId ?? this.orderId,
@@ -313,6 +321,8 @@ class OrderModel {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       deliveryNotes: deliveryNotes ?? this.deliveryNotes,
+      revisionNotes: revisionNotes ?? this.revisionNotes,
+      revisionsLeft: revisionsLeft ?? this.revisionsLeft,
     );
   }
 }
@@ -323,12 +333,24 @@ class MarketplaceProvider extends ChangeNotifier {
   String _userName = "John Doe";
   String _userEmail = "john@example.com";
   bool _isKycVerified = false;
+  bool _isTwoStepEnabled = false;
+  bool _isFingerprintEnabled = false;
+  bool _isFaceVerificationEnabled = false;
+  bool _isPhoneOtpEnabled = false;
+  bool _isPhoneVerified = false;
+  String _phoneNumber = "";
   
   // Client specific fields
   String _companyName = "TechVibe Global";
   String _businessType = "Software Startup";
   String _clientLocation = "Dhaka, Bangladesh";
   double _budgetRange = 5000.0;
+  String _clientDesignation = "CEO / Director";
+  String _clientCountry = "Bangladesh";
+  String _clientPhone = "+880 1712-345678";
+  String _clientBusinessNumber = "BN-998273-A";
+  String _clientDinNumber = "DIN-8874-982";
+  String _clientTinNumber = "TIN-7483-92138";
 
   // Creator specific fields
   List<String> _creatorCategories = ["Tech", "Gaming"];
@@ -369,11 +391,23 @@ class MarketplaceProvider extends ChangeNotifier {
   UserRole get currentRole => _currentRole;
   String get userName => _userName;
   bool get isKycVerified => _isKycVerified;
+  bool get isTwoStepEnabled => _isTwoStepEnabled;
+  bool get isFingerprintEnabled => _isFingerprintEnabled;
+  bool get isFaceVerificationEnabled => _isFaceVerificationEnabled;
+  bool get isPhoneOtpEnabled => _isPhoneOtpEnabled;
+  bool get isPhoneVerified => _isPhoneVerified;
+  String get phoneNumber => _phoneNumber;
   String get userEmail => _userEmail;
   String get companyName => _companyName;
   String get businessType => _businessType;
   String get clientLocation => _clientLocation;
   double get budgetRange => _budgetRange;
+  String get clientDesignation => _clientDesignation;
+  String get clientCountry => _clientCountry;
+  String get clientPhone => _clientPhone;
+  String get clientBusinessNumber => _clientBusinessNumber;
+  String get clientDinNumber => _clientDinNumber;
+  String get clientTinNumber => _clientTinNumber;
   List<String> get creatorCategories => _creatorCategories;
   String get creatorBio => _creatorBio;
   Map<String, String> get creatorPlatformLinks => _creatorPlatformLinks;
@@ -414,6 +448,32 @@ class MarketplaceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void toggleTwoStep(bool value) {
+    _isTwoStepEnabled = value;
+    notifyListeners();
+  }
+
+  void toggleFingerprint(bool value) {
+    _isFingerprintEnabled = value;
+    notifyListeners();
+  }
+
+  void toggleFaceVerification(bool value) {
+    _isFaceVerificationEnabled = value;
+    notifyListeners();
+  }
+
+  void togglePhoneOtp(bool value) {
+    _isPhoneOtpEnabled = value;
+    notifyListeners();
+  }
+
+  void setPhoneVerified(bool verified, String phone) {
+    _isPhoneVerified = verified;
+    _phoneNumber = phone;
+    notifyListeners();
+  }
+
   void updateClientProfile({
     required String name,
     required String email,
@@ -421,6 +481,12 @@ class MarketplaceProvider extends ChangeNotifier {
     required String business,
     required String location,
     required double budget,
+    required String designation,
+    required String country,
+    required String phone,
+    required String businessNumber,
+    required String dinNumber,
+    required String tinNumber,
   }) {
     _userName = name;
     _userEmail = email;
@@ -428,6 +494,12 @@ class MarketplaceProvider extends ChangeNotifier {
     _businessType = business;
     _clientLocation = location;
     _budgetRange = budget;
+    _clientDesignation = designation;
+    _clientCountry = country;
+    _clientPhone = phone;
+    _clientBusinessNumber = businessNumber;
+    _clientDinNumber = dinNumber;
+    _clientTinNumber = tinNumber;
     notifyListeners();
   }
 
@@ -616,6 +688,40 @@ class MarketplaceProvider extends ChangeNotifier {
         deliveryNotes: deliveryNotes,
       );
       _addNotification("Order $orderId has been delivered!");
+      notifyListeners();
+    }
+  }
+
+  void requestRevision(String orderId, String revisionNotes) {
+    final idx = _orders.indexWhere((o) => o.orderId == orderId);
+    if (idx != -1) {
+      final order = _orders[idx];
+      if (order.revisionsLeft > 0) {
+        _orders[idx] = order.copyWith(
+          status: 'revision_requested',
+          revisionNotes: revisionNotes,
+          revisionsLeft: order.revisionsLeft - 1,
+        );
+        _addNotification("Revision requested for Order $orderId");
+        notifyListeners();
+      }
+    }
+  }
+
+  void extendOrderTimeline(String orderId, int extraDays) {
+    final idx = _orders.indexWhere((o) => o.orderId == orderId);
+    if (idx != -1) {
+      final order = _orders[idx];
+      final currentDaysMatch = RegExp(r'(\d+)').firstMatch(order.deliveryTime);
+      String newTime = order.deliveryTime;
+      if (currentDaysMatch != null) {
+        final currentDays = int.parse(currentDaysMatch.group(1)!);
+        newTime = "${currentDays + extraDays} Days";
+      } else {
+        newTime = "$extraDays More Days";
+      }
+      _orders[idx] = order.copyWith(deliveryTime: newTime);
+      _addNotification("Order $orderId timeline extended by $extraDays days.");
       notifyListeners();
     }
   }
@@ -979,6 +1085,7 @@ class MarketplaceProvider extends ChangeNotifier {
         instagramLink: "instagram.com/sabbir_tech",
         instagramFollowers: 15000,
         videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-influencer-creating-social-media-content-34346-large.mp4",
+        viewsCount: 12450,
       ),
       GigModel(
         id: "g2",
@@ -1002,6 +1109,7 @@ class MarketplaceProvider extends ChangeNotifier {
         tiktokLink: "tiktok.com/@nabilacloset",
         tiktokFollowers: 85000,
         videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-recording-a-makeup-vlog-with-her-phone-34336-large.mp4",
+        viewsCount: 8920,
       ),
     ];
 

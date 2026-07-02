@@ -17,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _agreeToTerms = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +105,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _agreeToTerms,
+                      activeColor: AppColors.appThemeColor,
+                      onChanged: (value) {
+                        setState(() {
+                          _agreeToTerms = value ?? false;
+                        });
+                      },
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _agreeToTerms = !_agreeToTerms;
+                          });
+                        },
+                        child: const Text.rich(
+                          TextSpan(
+                            text: "I agree to the ",
+                            style: TextStyle(fontFamily: 'Poppins', fontSize: 11, color: AppColors.c6C6C6C),
+                            children: [
+                              TextSpan(
+                                text: "Terms of Service",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.appThemeColor),
+                              ),
+                              TextSpan(text: " & "),
+                              TextSpan(
+                                text: "Privacy Policy",
+                                style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.appThemeColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
                 CommonButton(
                   text: "Sign Up",
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      if (!_agreeToTerms) {
+                        Get.snackbar(
+                          "Agreement Required",
+                          "You must agree to the Terms of Service & Privacy Policy to register.",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                        );
+                        return;
+                      }
                       Get.offNamed(Routes.KYC);
                     }
                   },

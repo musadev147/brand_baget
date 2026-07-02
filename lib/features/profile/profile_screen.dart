@@ -5,6 +5,8 @@ import 'package:brand_bridge/common_wigdets/common_button.dart';
 import 'package:brand_bridge/common_wigdets/custom_textfiled.dart';
 import 'package:brand_bridge/common_wigdets/user_role.dart';
 import 'package:brand_bridge/provider/marketplace_provider.dart';
+import 'package:get/get.dart';
+import 'package:brand_bridge/route/app_pages.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -25,6 +27,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _businessController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _budgetController = TextEditingController();
+  final TextEditingController _designationController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _businessNumController = TextEditingController();
+  final TextEditingController _dinController = TextEditingController();
+  final TextEditingController _tinController = TextEditingController();
+  String _selectedCountry = "Bangladesh";
+  final List<String> _countries = [
+    "Bangladesh",
+    "United States",
+    "United Kingdom",
+    "India",
+    "Canada",
+    "Australia",
+    "Germany",
+    "Singapore",
+    "United Arab Emirates",
+  ];
 
   // Creator specific fields
   final TextEditingController _bioController = TextEditingController();
@@ -60,6 +79,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _businessController.text = marketplace.businessType;
         _locationController.text = marketplace.clientLocation;
         _budgetController.text = marketplace.budgetRange.toStringAsFixed(0);
+        _designationController.text = marketplace.clientDesignation;
+        _phoneController.text = marketplace.clientPhone;
+        _businessNumController.text = marketplace.clientBusinessNumber;
+        _dinController.text = marketplace.clientDinNumber;
+        _tinController.text = marketplace.clientTinNumber;
+        _selectedCountry = _countries.contains(marketplace.clientCountry)
+            ? marketplace.clientCountry
+            : _countries.first;
       } else {
         _bioController.text = marketplace.creatorBio;
         _followersController.text = marketplace.creatorFollowers.toString();
@@ -91,6 +118,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _businessController.dispose();
     _locationController.dispose();
     _budgetController.dispose();
+    _designationController.dispose();
+    _phoneController.dispose();
+    _businessNumController.dispose();
+    _dinController.dispose();
+    _tinController.dispose();
     _bioController.dispose();
     _followersController.dispose();
     _ytController.dispose();
@@ -200,14 +232,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
+                    controller: _designationController,
+                    labelText: "Designation",
+                    hintText: "e.g. Director, Manager, Owner",
+                  ),
+                  const SizedBox(height: 16),
+                  // Country Select Dropdown
+                  const Text(
+                    "Country",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.allPrimaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    value: _selectedCountry,
+                    style: const TextStyle(fontFamily: 'Poppins', fontSize: 13, color: AppColors.allPrimaryColor),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: AppColors.cDFE0E4),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: AppColors.cDFE0E4),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: AppColors.appThemeColor),
+                      ),
+                    ),
+                    items: _countries.map((String country) {
+                      return DropdownMenuItem<String>(
+                        value: country,
+                        child: Text(country),
+                      );
+                    }).toList(),
+                    onChanged: (val) {
+                      if (val != null) {
+                        setState(() => _selectedCountry = val);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextFormField(
+                    controller: _phoneController,
+                    labelText: "Phone Number",
+                    hintText: "e.g. +880 1712-345678",
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextFormField(
                     controller: _businessController,
                     labelText: "Business Sector",
                     hintText: "e.g. E-Commerce, Tech",
                   ),
                   const SizedBox(height: 16),
                   CustomTextFormField(
+                    controller: _businessNumController,
+                    labelText: "Business Registration Number",
+                    hintText: "e.g. BN-998273-A",
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextFormField(
+                          controller: _dinController,
+                          labelText: "DIN Number",
+                          hintText: "e.g. DIN-8874-982",
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: CustomTextFormField(
+                          controller: _tinController,
+                          labelText: "TIN Number",
+                          hintText: "e.g. TIN-7483-92138",
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextFormField(
                     controller: _locationController,
-                    labelText: "Location",
+                    labelText: "Location Address",
                     hintText: "e.g. Dhaka, Bangladesh",
                   ),
                   const SizedBox(height: 16),
@@ -344,6 +459,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     hintText: "e.g. https://youtube.com/watch?v=...",
                     validator: _validateUrl,
                   ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    "Other Active Collaborations",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.allPrimaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Builder(
+                    builder: (context) {
+                      final appliedCampaigns = marketplace.campaigns.where((c) {
+                        return c.proposals.any((p) => p.creatorId == "1");
+                      }).toList();
+
+                      final olderCollaborations = appliedCampaigns.isNotEmpty
+                          ? appliedCampaigns.sublist(0, appliedCampaigns.length - 1)
+                          : <CampaignModel>[];
+
+                      if (olderCollaborations.isEmpty) {
+                        return Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          child: const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(
+                              child: Text(
+                                "No other active collaborations",
+                                style: TextStyle(fontFamily: 'Poppins', fontSize: 12, color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      return Column(
+                        children: olderCollaborations.map((campaign) {
+                          final proposal = campaign.proposals.firstWhere((p) => p.creatorId == "1");
+
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: ListTile(
+                              onTap: () {
+                                Get.toNamed(Routes.CHAT, arguments: {
+                                  "chatId": "${campaign.id}_${proposal.creatorId}",
+                                  "campaignTitle": campaign.title,
+                                  "partnerName": marketplace.companyName,
+                                  "partnerRole": UserRole.client,
+                                });
+                              },
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              title: Text(
+                                campaign.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.allPrimaryColor,
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Brand: TechVibe Global • Bid: \$${proposal.price.toStringAsFixed(0)}",
+                                    style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 11,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: proposal.status == 'accepted'
+                                      ? Colors.green.withOpacity(0.1)
+                                      : proposal.status == 'rejected'
+                                          ? Colors.red.withOpacity(0.1)
+                                          : Colors.amber.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  proposal.status.toUpperCase(),
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.bold,
+                                    color: proposal.status == 'accepted'
+                                        ? Colors.green
+                                        : proposal.status == 'rejected'
+                                            ? Colors.red
+                                            : Colors.amber[800],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
                 ],
 
                 const SizedBox(height: 32),
@@ -359,6 +584,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           business: _businessController.text.trim(),
                           location: _locationController.text.trim(),
                           budget: double.tryParse(_budgetController.text.trim()) ?? 0.0,
+                          designation: _designationController.text.trim(),
+                          country: _selectedCountry,
+                          phone: _phoneController.text.trim(),
+                          businessNumber: _businessNumController.text.trim(),
+                          dinNumber: _dinController.text.trim(),
+                          tinNumber: _tinController.text.trim(),
                         );
                       } else {
                         marketplace.updateCreatorProfile(

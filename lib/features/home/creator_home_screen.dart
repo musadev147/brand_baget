@@ -108,23 +108,62 @@ class CreatorHomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Stats Row
-              Row(
-                children: [
-                  _buildCreatorStatCard(
-                    title: "Subscribers Reach",
-                    value: "${(marketplace.creatorFollowers / 1000).toStringAsFixed(0)}K",
-                    icon: Icons.rocket_launch_rounded,
-                    color: Colors.amber,
+              // Unified Creator Stats Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [AppColors.allPrimaryColor, Color(0xFF1E293B)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  const SizedBox(width: 16),
-                  _buildCreatorStatCard(
-                    title: "Platform Earnings",
-                    value: "\$1,250",
-                    icon: Icons.account_balance_wallet_rounded,
-                    color: Colors.green,
-                  ),
-                ],
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.allPrimaryColor.withOpacity(0.12),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Creator Performance Dashboard",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const Divider(color: Colors.white12, height: 20),
+                    // Row 1
+                    Row(
+                      children: [
+                        Expanded(child: _buildUnifiedStatItem("Profile Views", "1,420", Icons.remove_red_eye_rounded, Colors.blue)),
+                        const SizedBox(width: 16),
+                        Expanded(child: _buildUnifiedStatItem(
+                          "Running Projects", 
+                          "${marketplace.orders.where((o) => o.creatorName == 'Sabbir TechBytes' && o.status != 'completed').length} Active", 
+                          Icons.play_circle_fill_rounded, 
+                          Colors.orange
+                        )),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Row 2
+                    Row(
+                      children: [
+                        Expanded(child: _buildUnifiedStatItem("Creator Level", "Level 2", Icons.military_tech_rounded, Colors.amber)),
+                        const SizedBox(width: 16),
+                        Expanded(child: _buildUnifiedStatItem("Average Rating", "4.8 Rating", Icons.star_rounded, Colors.yellow)),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -311,121 +350,152 @@ class CreatorHomeScreen extends StatelessWidget {
                         ),
                       ),
                     )
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: appliedCampaigns.length,
-                      itemBuilder: (context, idx) {
-                        final campaign = appliedCampaigns[idx];
-                        final proposal = campaign.proposals.firstWhere((p) => p.creatorId == "1");
+                  : Column(
+                      children: [
+                        // Display only the last (most recent) collaboration
+                        Builder(
+                          builder: (context) {
+                            final campaign = appliedCampaigns.last;
+                            final proposal = campaign.proposals.firstWhere((p) => p.creatorId == "1");
 
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 14),
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          child: InkWell(
-                            onTap: () {
-                              Get.toNamed(Routes.CHAT, arguments: {
-                                "chatId": "${campaign.id}_${proposal.creatorId}",
-                                "campaignTitle": campaign.title,
-                                "partnerName": marketplace.companyName,
-                                "partnerRole": UserRole.client,
-                              });
-                            },
-                            borderRadius: BorderRadius.circular(12),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            return Card(
+                              margin: const EdgeInsets.only(bottom: 14),
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              child: InkWell(
+                                onTap: () {
+                                  Get.toNamed(Routes.CHAT, arguments: {
+                                    "chatId": "${campaign.id}_${proposal.creatorId}",
+                                    "campaignTitle": campaign.title,
+                                    "partnerName": marketplace.companyName,
+                                    "partnerRole": UserRole.client,
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Expanded(
-                                        child: Text(
-                                          campaign.title,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.allPrimaryColor,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: proposal.status == 'accepted'
-                                              ? Colors.green.withOpacity(0.1)
-                                              : proposal.status == 'rejected'
-                                                  ? Colors.red.withOpacity(0.1)
-                                                  : Colors.amber.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(6),
-                                        ),
-                                        child: Text(
-                                          proposal.status.toUpperCase(),
-                                          style: TextStyle(
-                                            fontFamily: 'Poppins',
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            color: proposal.status == 'accepted'
-                                                ? Colors.green
-                                                : proposal.status == 'rejected'
-                                                    ? Colors.red
-                                                    : Colors.amber[800],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    "Brand: TechVibe Global",
-                                    style: const TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 12,
-                                      color: AppColors.c6C6C6C,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Bid: \$${proposal.price.toStringAsFixed(0)}",
-                                        style: const TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.allPrimaryColor,
-                                        ),
-                                      ),
-                                      if (proposal.status == 'accepted')
-                                        const Row(
-                                          children: [
-                                            Icon(Icons.chat_bubble_outline, size: 16, color: AppColors.appThemeColor),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              "Open Chat / Contract",
-                                              style: TextStyle(
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              campaign.title,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
                                                 fontFamily: 'Poppins',
-                                                fontSize: 12,
+                                                fontSize: 15,
                                                 fontWeight: FontWeight.bold,
-                                                color: AppColors.appThemeColor,
+                                                color: AppColors.allPrimaryColor,
                                               ),
                                             ),
-                                          ],
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: proposal.status == 'accepted'
+                                                  ? Colors.green.withOpacity(0.1)
+                                                  : proposal.status == 'rejected'
+                                                      ? Colors.red.withOpacity(0.1)
+                                                      : Colors.amber.withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              proposal.status.toUpperCase(),
+                                              style: TextStyle(
+                                                fontFamily: 'Poppins',
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                                color: proposal.status == 'accepted'
+                                                    ? Colors.green
+                                                    : proposal.status == 'rejected'
+                                                        ? Colors.red
+                                                        : Colors.amber[800],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        "Brand: TechVibe Global",
+                                        style: const TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontSize: 12,
+                                          color: AppColors.c6C6C6C,
                                         ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Bid: \$${proposal.price.toStringAsFixed(0)}",
+                                            style: const TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.allPrimaryColor,
+                                            ),
+                                          ),
+                                          if (proposal.status == 'accepted')
+                                            const Row(
+                                              children: [
+                                                Icon(Icons.chat_bubble_outline, size: 16, color: AppColors.appThemeColor),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  "Open Chat / Contract",
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors.appThemeColor,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
+                            );
+                          },
+                        ),
+                        if (appliedCampaigns.length > 1) ...[
+                          const SizedBox(height: 4),
+                          Card(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: ListTile(
+                              onTap: () => Get.toNamed(Routes.PROFILE),
+                              leading: const Icon(Icons.history_rounded, color: AppColors.appThemeColor),
+                              title: Text(
+                                "View Older Collaborations (${appliedCampaigns.length - 1})",
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: AppColors.allPrimaryColor,
+                                ),
+                              ),
+                              subtitle: const Text(
+                                "The rest of your collaborations are in your Profile settings",
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 11,
+                                  color: AppColors.c6C6C6C,
+                                ),
+                              ),
+                              trailing: const Icon(Icons.chevron_right_rounded, size: 18, color: Colors.grey),
                             ),
                           ),
-                        );
-                      },
+                        ]
+                      ],
                     ),
             ],
           ),
@@ -434,66 +504,35 @@ class CreatorHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCreatorStatCard({
-    required String title,
-    required String value,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            )
-          ],
-        ),
-        child: Row(
+  Widget _buildUnifiedStatItem(String title, String value, IconData icon, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 11,
-                      color: AppColors.c6C6C6C,
-                    ),
-                  ),
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.allPrimaryColor,
-                    ),
-                  ),
-                ],
+            Icon(icon, color: color, size: 16),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 10.5,
+                color: Colors.white70,
               ),
             ),
           ],
         ),
-      ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: const TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }

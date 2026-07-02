@@ -273,9 +273,25 @@ class ClientHomeScreen extends StatelessWidget {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                "Reach: ${gig.totalReach > 0 ? (gig.totalReach / 1000).toStringAsFixed(0) : (gig.verifiedFollowers / 1000).toStringAsFixed(0)}k followers",
-                                                style: const TextStyle(fontSize: 9, color: Colors.green, fontWeight: FontWeight.bold),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Reach: ${gig.totalReach > 0 ? (gig.totalReach / 1000).toStringAsFixed(0) : (gig.verifiedFollowers / 1000).toStringAsFixed(0)}k followers",
+                                                    style: const TextStyle(fontSize: 8.5, color: Colors.green, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  const SizedBox(height: 2),
+                                                  Row(
+                                                    children: [
+                                                      const Icon(Icons.remove_red_eye_outlined, size: 10, color: Colors.grey),
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        "${gig.viewsCount > 0 ? (gig.viewsCount).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},') : '0'} views",
+                                                        style: const TextStyle(fontSize: 8.5, color: Colors.grey, fontWeight: FontWeight.w600),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
                                               ),
                                               Text(
                                                 "\$${gig.price.toStringAsFixed(0)}",
