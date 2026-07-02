@@ -186,6 +186,8 @@ class GigDetailsScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          _buildDetailRow(Icons.remove_red_eye_outlined, "Gig Total Views", "${gig.viewsCount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} views"),
+                          const Divider(height: 20),
                           _buildDetailRow(Icons.location_on_outlined, "Target Region", gig.region),
                           const Divider(height: 20),
                           _buildDetailRow(Icons.check_circle_outline, "Deliverables Scope", gig.deliverables),

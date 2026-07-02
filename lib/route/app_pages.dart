@@ -22,6 +22,8 @@ import 'package:brand_bridge/features/settings/settings_screen.dart';
 import 'package:brand_bridge/features/gig/gig_create_screen.dart';
 import 'package:brand_bridge/features/gig/gig_details_screen.dart';
 import 'package:brand_bridge/features/wallet/wallet_screen.dart';
+import 'package:brand_bridge/features/settings/two_step_verification_screen.dart';
+import 'package:brand_bridge/features/settings/order_tracking_screen.dart';
 
 part 'app_routes.dart';
 
@@ -120,6 +122,14 @@ class AppPages {
     GetPage(
       name: Routes.WALLET,
       page: () => const WalletScreen(),
+    ),
+    GetPage(
+      name: Routes.TWO_STEP_VERIFICATION,
+      page: () => const TwoStepVerificationScreen(),
+    ),
+    GetPage(
+      name: Routes.ORDER_TRACKING,
+      page: () => const OrderTrackingScreen(),
     ),
   ];
 }
